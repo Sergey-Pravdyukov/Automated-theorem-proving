@@ -9,7 +9,7 @@ int main() {
 
     const int maxSize = 1e3;
 
-    char fileName[maxSize];
+    char fileName[maxSize] = {'a'};
 
     std::cout << "Please input correct parsing file name: ";
 //    gets(fileName);
