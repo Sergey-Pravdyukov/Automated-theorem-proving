@@ -33,6 +33,7 @@ private:
 
     struct Disjunct {
         std::vector <Literal> literals;
+        std::string name;
         DisjunctType type;
     };
 

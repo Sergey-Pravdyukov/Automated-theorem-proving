@@ -47,10 +47,19 @@ void Parser::buildDisjunct(char *cnf) {
     Disjunct disjunct;
     Literal literal = {"", assertion};
     CommaOrder commaOrder = init;
-    for (int j = 0; j < strlen(cnf); ++j) {
+    const int initialIndex = 4;
+    for (int j = initialIndex; j < strlen(cnf); ++j) {
         if (cnf[j - 1] == ',')
             commaOrder = static_cast<CommaOrder>(std::min(static_cast<int>(commaOrder) + 1, 2));
         switch (commaOrder) {
+        case init: {
+            std::string word = "";
+            while (cnf[j] != ',')
+                if (isalpha(cnf[j]) || cnf[j] == '_')
+                    word += cnf[j++];
+            disjunct.name = word;
+            break;
+        }
         case first: {
             std::string word = "";
             while (cnf[j] != ',')
@@ -78,6 +87,7 @@ void Parser::buildDisjunct(char *cnf) {
         disjunct.literals.push_back(literal);
     }
     std::cout << std::endl;
+    std::cout << "Disjunct name: " << disjunct.name << std::endl;
     std::cout << "Disjunct type: ";
     (disjunct.type == hypothesis) ? std::cout << "hypothesis" << std::endl : std::cout << "negated conjecture" << std::endl;
     std::cout << "Disjunct literals: " << std::endl;
