@@ -1,12 +1,16 @@
 #pragma once
 
+#include "literal.h"
+
 #include <cstdio>
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <fstream>
 
-class Parser
-{
+using namespace std;
+
+class Parser {
 public:
     Parser(const char *file);
     ~Parser();
@@ -20,37 +24,25 @@ private:
         negated_conjecture
     };
 
-    enum LiteralType {
-        assertion,
-        negation
-    };
-
-    struct Literal {
-        std::string name;     // Исправить в дальнейшем, учитывая случай, когда литер имеет вид f(x,y),
-                              // то есть парсить название функции отдельно от ее аргументов
-        LiteralType type;
-    };
-
     struct Disjunct {
-        std::vector <Literal> literals;
-        std::string name;
+        vector <Literal> literals;
+        string name;
         DisjunctType type;
     };
 
-    void concat(char string[]);
     void parseCNF(int i);
-    void buildDisjunct(char *cnf);
+    void buildDisjunct(string cnf);
     void transformToOne_lineCNF(int i);
-    void print(char **array, const int size);
+    void printCnfs();
 
     static const int maxTextSize = 1e3;
     static const int maxStringLength = 1e3;
     
     FILE *ptrFile = nullptr;
-    char **text = new char*[maxTextSize];
-    char **cnfs = new char*[maxTextSize];
+    vector <string> text;
+    vector <string> cnfs;
     int textStringsAmount = 0;
     int cnfsAmount = 0;
     
-    std::vector <Disjunct> disjuncts;
+    vector <Disjunct> disjuncts;
 };

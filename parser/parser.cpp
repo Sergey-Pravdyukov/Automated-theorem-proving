@@ -1,13 +1,10 @@
 #include "parser.h"
 
 Parser::Parser(const char *fname) {
-    ptrFile = freopen("PUZ001-1.p", "r", stdin);
-    char currentString[maxStringLength];
-    if (ptrFile == NULL)
-        perror("Error opening file");
-    else
-        while (fgets(currentString, maxStringLength, ptrFile) != nullptr)
-            concat(currentString);
+    ifstream mFile("PUZ001-1.p");
+    string currentString;
+        while (getline(mFile, currentString))
+            text.push_back(currentString);
 }
 
 Parser::~Parser() {
@@ -25,7 +22,7 @@ bool isEqualsString(const char* a, const char* b) {
     return false;
 }
 
-std::string removeUnnecessaryBrackets(std::string expression) {
+void removeUnnecessaryBrackets(string &expression) {
     while (expression[0] == '(')
         expression.erase(expression.begin(), expression.begin() + 1);
     int balance = 0;
@@ -35,25 +32,25 @@ std::string removeUnnecessaryBrackets(std::string expression) {
         expression.erase(expression.begin(), expression.begin() + balance);
     else if (balance < 0)
         expression.erase(expression.end() + balance, expression.end());
-    return expression;
 }
 
-void Parser::buildDisjunct(char *cnf) {
+void Parser::buildDisjunct(string cnf) {
     enum CommaOrder {
         init,
         first,
         second
     };
     Disjunct disjunct;
-    Literal literal = {"", assertion};
+    Literal literal = Literal();
     CommaOrder commaOrder = init;
     const int initialIndex = 4;
-    for (int j = initialIndex; j < strlen(cnf); ++j) {
+    string stringLiteralName = "";
+    for (int j = initialIndex; j < cnf.size(); ++j) {
         if (cnf[j - 1] == ',')
-            commaOrder = static_cast<CommaOrder>(std::min(static_cast<int>(commaOrder) + 1, 2));
+            commaOrder = static_cast<CommaOrder>(min(static_cast<int>(commaOrder) + 1, 2));
         switch (commaOrder) {
         case init: {
-            std::string word = "";
+            string word = "";
             while (cnf[j] != ',')
                 if (isalpha(cnf[j]) || cnf[j] == '_')
                     word += cnf[j++];
@@ -61,94 +58,114 @@ void Parser::buildDisjunct(char *cnf) {
             break;
         }
         case first: {
-            std::string word = "";
+            string word = "";
             while (cnf[j] != ',')
                 word += cnf[j++];
             disjunct.type = (word == "hypothesis") ? hypothesis : negated_conjecture;
             break;
         }
         case second: {
-            std::cout << cnf[j];
             if (cnf[j] != '|' && cnf[j] != '~')
-                literal.name += cnf[j];
+                stringLiteralName += cnf[j];
             else if (cnf[j] == '~')
-                literal.type = negation;
+                literal.setState(Literal::LiteralState::negation);
             else {
-                literal.name = removeUnnecessaryBrackets(literal.name);
+                removeUnnecessaryBrackets(stringLiteralName);
+                literal.constructLiteral(stringLiteralName);
                 disjunct.literals.push_back(literal);
-                literal = {"", assertion};
+                literal = Literal();
+                stringLiteralName = "";
             }
             break;
         }
         }
     }
-    if (literal.name != "") {
-        literal.name = removeUnnecessaryBrackets(literal.name);
+    if (stringLiteralName != "") {
+        removeUnnecessaryBrackets(stringLiteralName);
+        literal.constructLiteral(stringLiteralName);
         disjunct.literals.push_back(literal);
     }
-    std::cout << std::endl;
-    std::cout << "Disjunct name: " << disjunct.name << std::endl;
-    std::cout << "Disjunct type: ";
-    (disjunct.type == hypothesis) ? std::cout << "hypothesis" << std::endl : std::cout << "negated conjecture" << std::endl;
-    std::cout << "Disjunct literals: " << std::endl;
+    cout << endl;
+    cout << "Disjunct name: " << disjunct.name << endl;
+    cout << "Disjunct type: ";
+    (disjunct.type == hypothesis) ? cout << "hypothesis" << endl : cout << "negated conjecture" << endl;
+    cout << "Disjunct literals: " << endl << endl;
     for (int i = 0; i < disjunct.literals.size(); ++i) {
-        std::cout << "Literal type: ";
-        (disjunct.literals[i].type == assertion) ? std::cout << "assertion" << std::endl : std::cout << "negation" << std::endl;
-        std::cout << "Literal: " << disjunct.literals[i].name << std::endl;
+        cout << "Literal state: ";
+        (disjunct.literals[i].getState() == Literal::LiteralState::assertion) ? cout << "assertion" << endl : cout << "negation" << endl;
+        cout << "Literal type: ";
+        switch (disjunct.literals[i].getType()) {
+        case Literal::LiteralType::constant: {
+            cout << "constant" << " ";
+            break;
+        }
+        case Literal::LiteralType::variable: {
+            cout << "variable" << " ";
+            break;
+        }
+        case Literal::LiteralType::function: {
+            cout << "function" << " ";
+            break;
+        }
+        default:
+            break;
+        }
+        cout << endl;
+        cout << "Literal name: " << disjunct.literals[i].getName() << endl;
+        cout << "Literal parameters: ";
+        literal.printParameters(disjunct.literals[i].getParameters());
+        cout << endl << endl;
     }
-    std::cout << std::endl << std::endl;
+    cout << endl << endl;
+    disjuncts.push_back(disjunct);
 }
 
 void Parser::parseCNF(int i) {
     transformToOne_lineCNF(i);
-    buildDisjunct(cnfs[cnfsAmount - 1]);
+    buildDisjunct(cnfs[cnfs.size() - 1]);
+
 }
 
 void Parser::transformToOne_lineCNF(int i) {
-    cnfs[cnfsAmount] = new char[maxStringLength];
-    int cnfLength = 0;
+    string currentString = "";
     for (;;++i)
-        for (int j = 0; j < strlen(text[i]); ++j) {
+        for (int j = 0; j < text[i].size(); ++j) {
             if (text[i][j] == '.') {
-                ++cnfsAmount;
+                cnfs.push_back(currentString);
+                currentString = "";
                 return;
             }
             else if (text[i][j] != '\n' && text[i][j] != ' ')
-                cnfs[cnfsAmount][cnfLength++] = text[i][j];
+                currentString += text[i][j];
             else if (text[i][j] == '\n')
                 continue;
         }
+
 }
 
-void Parser::print(char **a, const int size) {
-    for (int i = 0; i < size; ++i) {
-        const int length = strlen(a[i]) - 1;
-        for (int j = 0; j < length; ++j)
-            std::cout << a[i][j];
-        std::cout << std::endl;
+void Parser::printCnfs() {
+    for (int i = 0; i < cnfs.size(); ++i) {
+        for (int j = 0; j < cnfs[i].size(); ++j)
+            cout << cnfs[i][j];
+        cout << endl;
     }
 }
 
 void Parser::parse() {
-    for (int i = 0; i < textStringsAmount; ++i) {
+    for (int i = 0; i < text.size(); ++i) {
         if (text[i][0] == '%')
             continue;
-        if (strlen(text[i]) < 3)
+        if (text[i].size() < 3 || text[i][0] == ' ')
             continue;
-        char *comparedString = new char[3];
-        memcpy(comparedString, &text[i][0], 3);
-        if (isEqualsString(comparedString, "cnf"))
+        string comparedString = "";
+        for (int j = 0; j < 3; ++j)
+            comparedString += text[i][j];
+        if (comparedString == "cnf")
             parseCNF(i);
     }
-    std::cout << std::endl;
-    print(cnfs, cnfsAmount);
+    cout << endl;
+    printCnfs();
+    cout << "Disjuncts amount " << disjuncts.size() << endl;
 }
 
-void Parser::concat(char string[]) {
-    const int length = strlen(string) - 1;
-    text[textStringsAmount] = new char[length];
-    for (int i = 0; i < length; ++i)
-        text[textStringsAmount][i] = string[i];
-    ++textStringsAmount;
-}
 
