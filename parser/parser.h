@@ -13,7 +13,6 @@ using namespace std;
 class Parser {
 public:
     Parser(const char *file);
-    ~Parser();
 
     void parse();
 

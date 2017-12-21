@@ -10,12 +10,12 @@ class Literal
 public:
     Literal();
 
-    enum LiteralState {
+    enum State {
         assertion,
         negation
     };
 
-    enum LiteralType {
+    enum Type {
         init,
         constant,
         variable,
@@ -23,21 +23,19 @@ public:
     };
 
     void constructLiteral(std::string formula);
-    LiteralState getState();
-    LiteralType getType();
+    State getState();
+    Type getType();
     std::string getName();
     std::vector <Literal> getParameters();
-    void setState(LiteralState state);
-    void setType(LiteralType type);
+    void setState(State state);
+    void setType(Type type);
     void setName(std::string name);
     void setParameters(std::vector <Literal> parameters);
     void printParameters(std::vector <Literal> parameters);
 
 private:
-//    Literal constructLiteral(std::string formula);
-
-    LiteralState state;
-    LiteralType type;
+    State state;
+    Type type;
     std::string name;
-    std::vector <Literal> parameters; // простой вариант, когда нет вложенных функциональных символов
+    std::vector <Literal> parameters;
 };

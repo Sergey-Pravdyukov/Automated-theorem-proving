@@ -7,21 +7,6 @@ Parser::Parser(const char *fname) {
             text.push_back(currentString);
 }
 
-Parser::~Parser() {
-    fclose(ptrFile);
-}
-
-bool isEqualsString(const char* a, const char* b) {
-    if (strlen(a) == strlen(b)) {
-        const int length = strlen(a);
-        for (int i = 0; i < length; ++i)
-            if (a[i] != b[i])
-                return false;
-        return true;
-    }
-    return false;
-}
-
 void removeUnnecessaryBrackets(string &expression) {
     while (expression[0] == '(')
         expression.erase(expression.begin(), expression.begin() + 1);
@@ -68,7 +53,7 @@ void Parser::buildDisjunct(string cnf) {
             if (cnf[j] != '|' && cnf[j] != '~')
                 stringLiteralName += cnf[j];
             else if (cnf[j] == '~')
-                literal.setState(Literal::LiteralState::negation);
+                literal.setState(Literal::State::negation);
             else {
                 removeUnnecessaryBrackets(stringLiteralName);
                 literal.constructLiteral(stringLiteralName);
@@ -92,18 +77,18 @@ void Parser::buildDisjunct(string cnf) {
     cout << "Disjunct literals: " << endl << endl;
     for (int i = 0; i < disjunct.literals.size(); ++i) {
         cout << "Literal state: ";
-        (disjunct.literals[i].getState() == Literal::LiteralState::assertion) ? cout << "assertion" << endl : cout << "negation" << endl;
+        (disjunct.literals[i].getState() == Literal::State::assertion) ? cout << "assertion" << endl : cout << "negation" << endl;
         cout << "Literal type: ";
         switch (disjunct.literals[i].getType()) {
-        case Literal::LiteralType::constant: {
+        case Literal::Type::constant: {
             cout << "constant" << " ";
             break;
         }
-        case Literal::LiteralType::variable: {
+        case Literal::Type::variable: {
             cout << "variable" << " ";
             break;
         }
-        case Literal::LiteralType::function: {
+        case Literal::Type::function: {
             cout << "function" << " ";
             break;
         }
@@ -123,7 +108,6 @@ void Parser::buildDisjunct(string cnf) {
 void Parser::parseCNF(int i) {
     transformToOne_lineCNF(i);
     buildDisjunct(cnfs[cnfs.size() - 1]);
-
 }
 
 void Parser::transformToOne_lineCNF(int i) {
@@ -140,7 +124,6 @@ void Parser::transformToOne_lineCNF(int i) {
             else if (text[i][j] == '\n')
                 continue;
         }
-
 }
 
 void Parser::printCnfs() {

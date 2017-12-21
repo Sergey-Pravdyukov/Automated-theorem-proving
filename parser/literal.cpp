@@ -8,19 +8,19 @@ Literal::Literal()
     type = init;
 }
 
-Literal::LiteralState Literal::getState() {
+Literal::State Literal::getState() {
     return this->state;
 }
 
-void Literal::setState(LiteralState state) {
+void Literal::setState(State state) {
     this->state = state;
 }
 
-Literal::LiteralType Literal::getType() {
+Literal::Type Literal::getType() {
     return this->type;
 }
 
-void Literal::setType(LiteralType type) {
+void Literal::setType(Type type) {
     this->type = type;
 }
 
@@ -83,24 +83,6 @@ std::vector <Literal> getParametersFromString(std::string formula) {
     }
     return result;
 }
-
-/*Literal Literal::constructLiteral(std::string formula) {
-    Literal result = Literal();
-    if (isupper(formula[0])) {
-        result.type = variable;
-        result.name = formula;
-    }
-    else if (formula[formula.size() - 1] != ')') {
-        result.type = constant;
-        result.name = formula;
-    }
-    else {
-        result.type = function;
-        result.name = getFunctionNameFromString(formula);
-        result.parameters = getParametersFromString(formula);
-    }
-    return result;
-}*/
 
 void Literal::constructLiteral(std::string formula) {
     if (isupper(formula[0])) {
