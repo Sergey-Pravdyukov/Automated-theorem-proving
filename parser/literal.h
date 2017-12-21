@@ -5,6 +5,8 @@
 #include <cctype>
 #include <iostream>
 
+using namespace std;
+
 class Literal
 {
 public:
@@ -32,6 +34,7 @@ public:
     void setName(std::string name);
     void setParameters(std::vector <Literal> parameters);
     void printParameters(std::vector <Literal> parameters);
+    void print();
 
 private:
     State state;

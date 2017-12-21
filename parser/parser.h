@@ -1,6 +1,6 @@
 #pragma once
 
-#include "literal.h"
+#include "disjunct.h"
 
 #include <cstdio>
 #include <iostream>
@@ -17,17 +17,6 @@ public:
     void parse();
 
 private:
-
-    enum DisjunctType {
-        hypothesis,
-        negated_conjecture
-    };
-
-    struct Disjunct {
-        vector <Literal> literals;
-        string name;
-        DisjunctType type;
-    };
 
     void parseCNF(int i);
     void buildDisjunct(string cnf);

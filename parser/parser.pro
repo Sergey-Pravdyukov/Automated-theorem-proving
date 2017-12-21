@@ -16,8 +16,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     parser.cpp \
-    literal.cpp
+    literal.cpp \
+    disjunct.cpp
 
 HEADERS += \
     parser.h \
-    literal.h
+    literal.h \
+    disjunct.h

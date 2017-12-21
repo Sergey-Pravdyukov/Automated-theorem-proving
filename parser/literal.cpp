@@ -99,3 +99,30 @@ void Literal::constructLiteral(std::string formula) {
         parameters = getParametersFromString(formula);
     }
 }
+
+void Literal::print() {
+    cout << "Literal state: ";
+    (state == assertion) ? cout << "assertion" << endl : cout << "negation" << endl;
+    cout << "Literal type: ";
+    switch (type) {
+    case constant: {
+        cout << "constant" << " ";
+        break;
+    }
+    case variable: {
+        cout << "variable" << " ";
+        break;
+    }
+    case function: {
+        cout << "function" << " ";
+        break;
+    }
+    default:
+        break;
+    }
+    cout << endl;
+    cout << "Literal name: " << name << endl;
+    cout << "Literal parameters: ";
+    printParameters(parameters);
+    cout << endl << endl;
+}
