@@ -1,6 +1,6 @@
 #include "parser.h"
 
-Parser::Parser(const char *fname) {
+void Parser::readFromFile(const char *fname) {
     ifstream mFile("PUZ001-1.p");
     string currentString;
         while (getline(mFile, currentString))
@@ -9,8 +9,7 @@ Parser::Parser(const char *fname) {
 
 void Parser::parseCNF(int i) {
     transformToOne_lineCNF(i);
-    Disjunct disjunct = Disjunct();
-    disjuncts.push_back(disjunct.buildDisjunct(cnfs[cnfs.size() - 1]));
+    disjuncts.push_back(Disjunct().buildDisjunct(cnfs[cnfs.size() - 1]));
 }
 
 void Parser::transformToOne_lineCNF(int i) {
@@ -37,21 +36,17 @@ void Parser::printCnfs() {
     }
 }
 
-void Parser::parse() {
+void Parser::parse(const char *file) {
+    readFromFile(file);
     for (int i = 0; i < text.size(); ++i) {
         if (text[i][0] == '%')
             continue;
         if (text[i].size() < 3 || text[i][0] == ' ')
             continue;
-        string comparedString = "";
-        for (int j = 0; j < 3; ++j)
-            comparedString += text[i][j];
-        if (comparedString == "cnf")
+        if (text[i].substr(0, 3) == "cnf")
             parseCNF(i);
     }
-    cout << endl;
     printCnfs();
-    cout << "Disjuncts amount " << disjuncts.size() << endl;
 }
 
 

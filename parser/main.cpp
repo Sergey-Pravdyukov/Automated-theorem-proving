@@ -15,8 +15,8 @@ int main() {
 //    gets(fileName);
     std::cout << "File name: " << fileName << std::endl;
 
-    Parser *parser = new Parser(fileName);
-    parser->parse();
+    Parser *parser = new Parser();
+    parser->parse(fileName);
 
 
 
