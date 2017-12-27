@@ -8,6 +8,15 @@ Literal::Literal()
     type = init;
 }
 
+bool Literal::operator == (Literal a) {
+    if (a.parameters.size() != this->parameters.size())
+        return false;
+    for (int i = 0; i < a.parameters.size(); ++i)
+        if (!(a.parameters[i] == this->parameters[i]))
+            return false;
+    return (a.state == this->state && a.type == this->type && a.name == this->name);
+}
+
 Literal::State Literal::getState() {
     return this->state;
 }
@@ -125,4 +134,8 @@ void Literal::print() {
     cout << "Literal parameters: ";
     printParameters(parameters);
     cout << endl << endl;
+}
+
+bool Literal::isContradictory(Literal a, Literal b) {
+    return (a.name == b.name && a.type == b.type && a.state != b.state);
 }

@@ -35,6 +35,9 @@ public:
     void setParameters(std::vector <Literal> parameters);
     void printParameters(std::vector <Literal> parameters);
     void print();
+    static bool isContradictory(Literal a, Literal b);
+
+    bool operator == (Literal a);
 
 private:
     State state;

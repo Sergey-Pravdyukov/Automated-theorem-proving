@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ class Disjunct
 {
 public:
     Disjunct();
+    Disjunct(vector <Literal> literals);
 
     void print();
 
@@ -27,6 +29,9 @@ public:
     void setName(string name);
     void setType(Type type);
     Disjunct buildDisjunct(string cnf);
+    static vector <Literal> merge(vector <Literal> a, vector <Literal> b);
+
+    bool operator == (Disjunct a);
 
 private:
     vector <Literal> literals;

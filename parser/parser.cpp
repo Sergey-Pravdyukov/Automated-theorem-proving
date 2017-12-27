@@ -1,7 +1,7 @@
 #include "parser.h"
 
 void Parser::readFromFile(const char *fname) {
-    ifstream mFile("PUZ001-1.p");
+    ifstream mFile("PUZ009-1.p");
     string currentString;
         while (getline(mFile, currentString))
             text.push_back(currentString);
@@ -36,6 +36,52 @@ void Parser::printCnfs() {
     }
 }
 
+bool Parser::resolution() {
+    bool isFind = false;
+    for (int i = 0; i < disjuncts.size(); ++i) {
+        if (isFind)
+            --i;
+        isFind = false;
+        vector <Literal> merger;
+        merger.clear();
+        vector <Literal> literals = disjuncts[i].getLiterals();
+        int comparedLiteralsIndex = -1;
+        for (int j = 0; j < literals.size(); ++j) {
+            for (int k = 0; k < disjuncts.size(); ++k) {
+                if (i == k)
+                    continue;
+                vector <Literal> comparedLiterals = disjuncts[k].getLiterals();
+                for (int l = 0; l < comparedLiterals.size(); ++l) {
+                    if (Literal::isContradictory(literals[j], comparedLiterals[l])) {
+                        merger = Disjunct::merge(literals, comparedLiterals);
+                        if (merger.empty())
+                            return true;
+                        comparedLiteralsIndex = k;
+                        isFind = true;
+                        break;
+                    }
+                }
+                if (isFind)
+                    break;
+            }
+            if (isFind)
+                break;
+        }
+        if (isFind) {
+            disjuncts.erase(disjuncts.begin() + i);
+            disjuncts.erase(disjuncts.begin() + comparedLiteralsIndex - 1);
+            disjuncts.push_back(Disjunct(merger));
+            merger.clear();
+        }
+    }
+    for (int i = 0; i < disjuncts.size(); ++i) {
+        vector <Literal> literals = disjuncts[i].getLiterals();
+        if (literals.size() == 0)
+            return true;
+    }
+    return false;
+}
+
 void Parser::parse(const char *file) {
     readFromFile(file);
     for (int i = 0; i < text.size(); ++i) {
@@ -46,7 +92,8 @@ void Parser::parse(const char *file) {
         if (text[i].substr(0, 3) == "cnf")
             parseCNF(i);
     }
-    printCnfs();
+    cout << resolution() << endl;
+//    printCnfs();
 }
 
 

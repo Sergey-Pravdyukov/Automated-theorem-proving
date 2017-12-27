@@ -22,6 +22,7 @@ private:
     void buildDisjunct(string cnf);
     void transformToOne_lineCNF(int i);
     void printCnfs();
+    bool resolution();
     
     FILE *ptrFile = nullptr;
     vector <string> text;
