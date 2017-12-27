@@ -1,7 +1,7 @@
 #include "parser.h"
 
 void Parser::readFromFile(const char *fname) {
-    ifstream mFile("PUZ009-1.p");
+    ifstream mFile("GRA001-1.p");
     string currentString;
         while (getline(mFile, currentString))
             text.push_back(currentString);
@@ -12,20 +12,19 @@ void Parser::parseCNF(int i) {
     disjuncts.push_back(Disjunct().buildDisjunct(cnfs[cnfs.size() - 1]));
 }
 
-void Parser::transformToOne_lineCNF(int i) {
+void Parser::transformToOne_lineCNF(int &i) {
     string currentString = "";
-    for (;;++i)
+    for (;;++i) {
         for (int j = 0; j < text[i].size(); ++j) {
             if (text[i][j] == '.') {
                 cnfs.push_back(currentString);
                 currentString = "";
                 return;
             }
-            else if (text[i][j] != '\n' && text[i][j] != ' ')
+            else if (text[i][j] != ' ')
                 currentString += text[i][j];
-            else if (text[i][j] == '\n')
-                continue;
         }
+    }
 }
 
 void Parser::printCnfs() {
@@ -34,6 +33,25 @@ void Parser::printCnfs() {
             cout << cnfs[i][j];
         cout << endl;
     }
+    cout << endl << endl;
+}
+
+void printStep (vector <Literal> a, vector <Literal> b, vector <Literal> merge) {
+    cout << "Contradictional literals: " << endl;
+    cout << "First disjunct: " << endl;
+    for (int i = 0; i < a.size(); ++i)
+        a[i].print();
+    cout << "Second disjunct: " << endl;
+    for (int i = 0; i < b.size(); ++i)
+        b[i].print();
+    if (merge.size() != 0) {
+        cout << "Merged disjunct:" << endl;
+        for (int i = 0; i < merge.size(); ++i)
+            merge[i].print();
+    }
+    else
+        cout << "Merged disjunct is empty. Formula is universaly valid. The statement is true." << endl;
+    cout << endl << endl << "------------------------------------------------------------" << endl;
 }
 
 bool Parser::resolution() {
@@ -54,7 +72,8 @@ bool Parser::resolution() {
                 for (int l = 0; l < comparedLiterals.size(); ++l) {
                     if (Literal::isContradictory(literals[j], comparedLiterals[l])) {
                         merger = Disjunct::merge(literals, comparedLiterals);
-                        if (merger.empty())
+                        printStep (literals, comparedLiterals, merger);
+                        if (merger.size() == 0)
                             return true;
                         comparedLiteralsIndex = k;
                         isFind = true;
@@ -92,8 +111,8 @@ void Parser::parse(const char *file) {
         if (text[i].substr(0, 3) == "cnf")
             parseCNF(i);
     }
+    printCnfs();
     cout << resolution() << endl;
-//    printCnfs();
 }
 
 

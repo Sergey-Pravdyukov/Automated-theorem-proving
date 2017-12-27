@@ -131,9 +131,9 @@ void Literal::print() {
     }
     cout << endl;
     cout << "Literal name: " << name << endl;
-    cout << "Literal parameters: ";
-    printParameters(parameters);
-    cout << endl << endl;
+//    cout << "Literal parameters: ";
+//    printParameters(parameters);
+    cout << endl;
 }
 
 bool Literal::isContradictory(Literal a, Literal b) {

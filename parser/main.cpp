@@ -11,9 +11,9 @@ int main() {
 
     char fileName[maxSize] = {'a'};
 
-    std::cout << "Please input correct parsing file name: ";
+    cout << "Please input correct parsing file name: ";
 //    gets(fileName);
-    std::cout << "File name: " << fileName << std::endl;
+    cout << "File name: " << fileName << endl << endl;
 
     Parser *parser = new Parser();
     parser->parse(fileName);

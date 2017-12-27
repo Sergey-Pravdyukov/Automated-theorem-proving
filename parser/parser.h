@@ -20,7 +20,7 @@ private:
     void readFromFile(const char *file);
     void parseCNF(int i);
     void buildDisjunct(string cnf);
-    void transformToOne_lineCNF(int i);
+    void transformToOne_lineCNF(int &i);
     void printCnfs();
     bool resolution();
     
