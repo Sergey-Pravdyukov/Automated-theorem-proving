@@ -1,10 +1,12 @@
 #include "parser.h"
 
 void Parser::readFromFile(const char *fname) {
-    ifstream mFile("PUZ004-1.p");
+    ifstream mFile(fname);
     string currentString;
         while (getline(mFile, currentString))
             text.push_back(currentString);
+    mFile.close();
+    ofstream cout("test1.txt", ios_base::app);
 }
 
 void Parser::parseCNF(int i) {
@@ -18,7 +20,6 @@ void Parser::transformToOne_lineCNF(int i) {
         for (int j = 0; j < text[i].size(); ++j) {
             if (text[i][j] == '.') {
                 cnfs.push_back(currentString);
-                cout << currentString << endl;
                 return;
             }
             if (text[i][j] != ' ' && text[i][j] != '\n')
@@ -29,15 +30,18 @@ void Parser::transformToOne_lineCNF(int i) {
 }
 
 void Parser::printCnfs() {
+    ofstream cout("test1.txt", ios_base::app);
     for (int i = 0; i < cnfs.size(); ++i) {
         for (int j = 0; j < cnfs[i].size(); ++j)
             cout << cnfs[i][j];
         cout << endl;
     }
     cout << endl << endl;
+    cout.close();
 }
 
 void printMerge (Disjunct merge) {
+    ofstream cout("test1.txt", ios_base::app);
     if (!merge.isEmpty()) {
         cout << "Merged disjunct:" << endl;
         merge.print();
@@ -45,15 +49,18 @@ void printMerge (Disjunct merge) {
     else
         cout << "Merged disjunct is empty. Formula is universaly valid. The statement is true." << endl;
     cout << endl << endl << "------------------------------------------------------------" << endl;
+    cout.close();
 
 }
 
 void printContradictoryDisjuncts (Disjunct a, Disjunct b) {
+    ofstream cout("test1.txt", ios_base::app);
     cout << "Disjuncts with contradictional literals: " << endl;
     cout << "First disjunct: " << endl;
     a.print();
     cout << "Second disjunct: " << endl;
     b.print();
+    cout.close();
 }
 
 bool Parser::isUnique(Disjunct merger, vector <Disjunct> addedDisjuncts) {
@@ -87,14 +94,6 @@ bool Parser::resolution() {
                         if (merger.isEmpty())
                             return true;
                         if (isUnique(merger, addedDisjuncts) && !merger.haveSimilarLiterals()) {
-//                            cout << i + 1 << ") + " << k + 1 << ") -> ";
-//                            vector <Literal> a = merger.getLiterals();
-//                            for (int r = 0; r < a.size() - 1; ++r) {
-//                                (a[r].getState() != Literal::negation) ? cout << "" : cout << "~";
-//                                cout << a[r].getName() << " | ";
-//                            }
-//                            (a[a.size() - 1].getState() != Literal::negation) ? cout << "" : cout << "~";
-//                            cout << a[a.size() - 1].getName() << endl;
                             addedDisjuncts.push_back(merger);
                         }
                     }
@@ -102,7 +101,6 @@ bool Parser::resolution() {
             }
         for (int j = 0; j < addedDisjuncts.size(); ++j)
             disjuncts.push_back(addedDisjuncts[j]);
-//        cout << endl << endl << endl;
     }
     return false;
 }
@@ -117,7 +115,7 @@ void Parser::parse(const char *file) {
         if (text[i].substr(0, 3) == "cnf")
             parseCNF(i);
     }
-//    printCnfs();
+    printCnfs();
     cout << resolution() << endl;
 }
 

@@ -32,6 +32,7 @@ vector <Literal> Disjunct::getLiterals() {
 }
 
 void Disjunct::print() {
+    ofstream cout("test1.txt", ios_base::app);
     cout << "Disjunct name: " << name << endl;
     cout << "Disjunct type: ";
     (type == hypothesis) ? cout << "hypothesis" << endl : cout << "negated conjecture" << endl;
@@ -39,6 +40,7 @@ void Disjunct::print() {
     for (int i = 0; i < literals.size(); ++i)
         literals[i].print();
     cout << endl << endl;
+    cout.close();
 }
 
 void removeUnnecessaryBrackets(string &expression) {
@@ -109,7 +111,6 @@ Disjunct Disjunct::buildDisjunct(string cnf) {
         literal.constructLiteral(stringLiteralName);
         disjunct.literals.push_back(literal);
     }
-//    disjunct.print();
     return disjunct;
 }
 

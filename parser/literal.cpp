@@ -110,6 +110,7 @@ void Literal::constructLiteral(std::string formula) {
 }
 
 void Literal::print() {
+    ofstream cout("test1.txt", ios_base::app);
     cout << "Literal state: ";
     (state == assertion) ? cout << "assertion" << endl : cout << "negation" << endl;
     cout << "Literal type: ";
@@ -131,9 +132,8 @@ void Literal::print() {
     }
     cout << endl;
     cout << "Literal name: " << name << endl;
-//    cout << "Literal parameters: ";
-//    printParameters(parameters);
     cout << endl;
+    cout.close();
 }
 
 bool Literal::isContradictory(Literal a, Literal b) {

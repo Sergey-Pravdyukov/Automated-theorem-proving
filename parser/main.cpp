@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <fstream>
 
 using namespace std;
 
@@ -12,13 +13,11 @@ int main() {
     char fileName[maxSize] = {'a'};
 
     cout << "Please input correct parsing file name: ";
-//    gets(fileName);
+    gets(fileName);
     cout << "File name: " << fileName << endl << endl;
 
     Parser *parser = new Parser();
     parser->parse(fileName);
-
-
 
     return 0;
 }
