@@ -13,6 +13,11 @@ Disjunct::Disjunct(vector<Literal> literals) {
     type = init;
 }
 
+Disjunct::Disjunct(vector<Literal> literals, string name) {
+    this->literals = literals;
+    this->name = name;
+}
+
 bool Disjunct::operator == (Disjunct a) {
     if (a.literals.size() != this->literals.size())
         return false;
@@ -48,6 +53,10 @@ void removeUnnecessaryBrackets(string &expression) {
         expression.erase(expression.end() + balance, expression.end());
 }
 
+bool isSuitableLetter (char a) {
+    return  isalpha(a) || a == '_' || isdigit(a);
+}
+
 Disjunct Disjunct::buildDisjunct(string cnf) {
     enum CommaOrder {
         init,
@@ -65,9 +74,10 @@ Disjunct Disjunct::buildDisjunct(string cnf) {
         switch (commaOrder) {
         case init: {
             string word = "";
-            while (cnf[j] != ',')
-                if (isalpha(cnf[j]) || cnf[j] == '_')
-                    word += cnf[j++];
+            do {
+                if (isSuitableLetter(cnf[j]))
+                    word += cnf[j];
+            } while (cnf[++j] != ',');
             disjunct.name = word;
             break;
         }
@@ -103,24 +113,35 @@ Disjunct Disjunct::buildDisjunct(string cnf) {
     return disjunct;
 }
 
-vector <Literal> Disjunct::merge(vector<Literal> a, vector<Literal> b) {
+Disjunct Disjunct::merge(Disjunct a, Disjunct b, Literal aLiteral, Literal bLiteral, const int number) {
+    vector <Literal> aLiterals = a.getLiterals();
     vector <Literal> result;
     result.clear();
-    for (int i = 0; i < a.size(); ++i) {
-        bool isFind = false;
-        for (int j = 0; j < b.size(); ++j)
-            if (Literal::isContradictory(a[i], b[j]))
-                isFind = true;
-        if (isFind == false)
-            result.push_back(a[i]);
+    for (int i = 0; i < aLiterals.size(); ++i)
+        if (!(aLiteral == aLiterals[i]))
+            result.push_back(aLiterals[i]);
+    vector <Literal> bLiterals = b.getLiterals();
+    for (int i = 0; i < bLiterals.size(); ++i) {
+        if (bLiteral == bLiterals[i])
+            continue;
+        if (find(result.begin(), result.end(), bLiterals[i]) == result.end())
+            result.push_back(bLiterals[i]);
     }
-    for (int i = 0; i < b.size(); ++i) {
-        bool isFind = false;
-        for (int j = 0; j < a.size(); ++j)
-            if (Literal::isContradictory(b[i], a[j]))
-                isFind = true;
-        if (isFind == false)
-            result.push_back(b[i]);
-    }
-    return result;
+    return Disjunct(result, "clause_" + to_string(number));
+}
+
+bool Disjunct::isEmpty() {
+    return literals.size() == 0;
+}
+
+void Disjunct::eraseLiteral(Literal a) {
+    literals.erase(find(literals.begin(), literals.end(), a));
+}
+
+bool Disjunct::haveSimilarLiterals() {
+    for (int i = 0; i < literals.size(); ++i)
+        for (int j = 0; j < literals.size(); ++j)
+            if (i != j && literals[i] == literals[j])
+                return true;
+    return false;
 }

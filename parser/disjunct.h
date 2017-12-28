@@ -13,6 +13,7 @@ class Disjunct
 public:
     Disjunct();
     Disjunct(vector <Literal> literals);
+    Disjunct(vector <Literal> literals, string name);
 
     void print();
 
@@ -29,7 +30,10 @@ public:
     void setName(string name);
     void setType(Type type);
     Disjunct buildDisjunct(string cnf);
-    static vector <Literal> merge(vector <Literal> a, vector <Literal> b);
+    static Disjunct merge(Disjunct a, Disjunct b, Literal aLiteral, Literal bLiteral, const int number);
+    bool isEmpty();
+    void eraseLiteral(Literal a);
+    bool haveSimilarLiterals();
 
     bool operator == (Disjunct a);
 
