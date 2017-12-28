@@ -1,0 +1,54 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.sdf
+*.vcxproj
+*.vcxproj.filters
+*.depend
+*.layout
+*.ilk
+*.pdb
+*.tlog
+*.idb
+*.suo
+*.log
+*.user
+*Makefile*
+*moc*
+*.pro.user*
+*.qmake*
+
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.rar
+*.dia
+*debug*
+*dox*
+*html*
+*latex*
+*txt*
+*.p
+parse

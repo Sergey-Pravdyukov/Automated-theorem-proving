@@ -1,0 +1,48 @@
+#pragma once
+
+#include <string>
+#include <vector>
+#include <cctype>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class Literal
+{
+public:
+    Literal();
+
+    enum State {
+        assertion,
+        negation
+    };
+
+    enum Type {
+        init,
+        constant,
+        variable,
+        function
+    };
+
+    void constructLiteral(std::string formula);
+    State getState();
+    Type getType();
+    std::string getName();
+    std::vector <Literal> getParameters();
+    void setState(State state);
+    void setType(Type type);
+    void setName(std::string name);
+    void setParameters(std::vector <Literal> parameters);
+    void printParameters(std::vector <Literal> parameters);
+    void print();
+    static bool isContradictory(Literal a, Literal b);
+
+    bool operator == (Literal a);
+
+private:
+    State state;
+    Type type;
+    std::string name;
+    std::vector <Literal> parameters;
+};
